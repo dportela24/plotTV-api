@@ -1,34 +1,42 @@
 package com.dportela.plotTV.service
 
 import com.dportela.plotTV.model.Series
+import com.dportela.plotTV.model.dao.GenreDAO
+import com.dportela.plotTV.model.exception.ConnectionErrorException
+import com.dportela.plotTV.repository.GenreRepository
 import com.dportela.plotTV.repository.SeriesRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.Duration
-import kotlin.random.Random
+import org.springframework.web.client.ResourceAccessException
+import org.springframework.web.client.RestTemplate
+import java.net.ConnectException
 
 @Service
 class SeriesService(
-    val seriesRepository: SeriesRepository
+    val seriesRepository: SeriesRepository,
+    val genreRepository: GenreRepository,
+    val scrapperService: ScrapperService
 ) {
-    fun createSeries() {
-        val series = Series(
-            imdbId = "tt" + Random.nextInt(10000000, 99999999),
-            name = "My name " + Random.nextInt(0, 10),
-            originalName = "My original name " + Random.nextInt(0, 10),
-            summary = "My summary " + Random.nextInt(0, 10),
-            episodeDuration = Duration.ofHours(Random.nextInt(1, 10).toLong()).plusMinutes(Random.nextInt(1, 10).toLong()),
-            startYear = Random.nextInt(2000, 2010),
-            endYear = Random.nextInt(2010, 2020),
-            genres = setOf("Comedy", "Drama"),
-            ratingValue = Random.nextFloat() *10,
-            ratingCount = Random.nextInt(1, 1000000),
-            posterURL = "My url" + Random.nextInt(0, 10),
-            numberSeasons = Random.nextInt(1, 10),
-            //seasons: Set<Season>
-        )
+    val logger = LoggerFactory.getLogger(this::class.java)
 
-        val seriesDAO = series.toDAO()
+    fun createSeries(imdbId: String) : Series? {
+        val series = scrapperService.fetchSeries(imdbId)
 
-        seriesRepository.save(seriesDAO)
+        series?.toDAO()?.also { seriesDAO ->
+            series.genres.map { genre ->
+                val genreDAO = genreRepository.findByGenre(genre) ?: GenreDAO(genre = genre)
+                seriesDAO.genres.add(genreDAO)
+            }
+
+            seriesRepository.save(seriesDAO)
+        }
+
+        return series
+    }
+
+    fun getSeries(imdbId: String): Series? {
+        val seriesDAO = seriesRepository.findByImdbId(imdbId)
+
+        return seriesDAO?.let { Series.fromDAO(it) } ?: createSeries(imdbId)
     }
 }

@@ -1,5 +1,6 @@
 package com.dportela.plotTV.model
 
+import com.dportela.plotTV.model.dao.GenreDAO
 import com.dportela.plotTV.model.dao.SeriesDAO
 import java.time.Duration
 import java.time.Instant
@@ -27,11 +28,27 @@ data class Series (
         episodeDuration = episodeDuration,
         startYear = startYear,
         endYear = endYear,
-        //genres = genres,
         ratingValue = ratingValue,
         ratingCount = ratingCount,
         posterURL = posterURL,
         numberSeasons = numberSeasons,
         updatedAt = Instant.now()
     )
+
+    companion object {
+        fun fromDAO(seriesDAO: SeriesDAO) = Series(
+            imdbId = seriesDAO.imdbId,
+            name = seriesDAO.name,
+            originalName = seriesDAO.originalName,
+            summary = seriesDAO.summary,
+            episodeDuration = seriesDAO.episodeDuration,
+            startYear = seriesDAO.startYear,
+            endYear = seriesDAO.endYear,
+            genres = seriesDAO.genres.map { it.genre }.toSet(),
+            ratingValue = seriesDAO.ratingValue,
+            ratingCount = seriesDAO.ratingCount,
+            posterURL = seriesDAO.posterURL,
+            numberSeasons = seriesDAO.numberSeasons,
+        )
+    }
 }

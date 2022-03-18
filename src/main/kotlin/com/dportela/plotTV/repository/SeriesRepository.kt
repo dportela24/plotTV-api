@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SeriesRepository : JpaRepository<SeriesDAO, Long> {}
+interface SeriesRepository : JpaRepository<SeriesDAO, Long> {
+    fun findByImdbId(imdbId: String) : SeriesDAO?
+}
