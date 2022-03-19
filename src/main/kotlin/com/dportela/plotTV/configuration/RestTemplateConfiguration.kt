@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration
 class RestTemplateConfiguration {
     @Bean
     fun restTemplate() = RestTemplateBuilder()
-        .rootUri("http://localhost:7000")
+        .rootUri("http://localhost:5000")
         .errorHandler(ScrapperRestTemplateResponseErrorHandler())
         .build()
 }

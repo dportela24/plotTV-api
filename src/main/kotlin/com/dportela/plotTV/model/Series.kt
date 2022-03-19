@@ -18,37 +18,5 @@ data class Series (
     val ratingCount: Int?,
     val posterURL: String?,
     val numberSeasons: Int,
-    //val seasons: Set<Season>
-) {
-    fun toDAO() = SeriesDAO(
-        imdbId = imdbId,
-        name = name,
-        originalName = originalName,
-        summary = summary,
-        episodeDuration = episodeDuration,
-        startYear = startYear,
-        endYear = endYear,
-        ratingValue = ratingValue,
-        ratingCount = ratingCount,
-        posterURL = posterURL,
-        numberSeasons = numberSeasons,
-        updatedAt = Instant.now()
-    )
-
-    companion object {
-        fun fromDAO(seriesDAO: SeriesDAO) = Series(
-            imdbId = seriesDAO.imdbId,
-            name = seriesDAO.name,
-            originalName = seriesDAO.originalName,
-            summary = seriesDAO.summary,
-            episodeDuration = seriesDAO.episodeDuration,
-            startYear = seriesDAO.startYear,
-            endYear = seriesDAO.endYear,
-            genres = seriesDAO.genres.map { it.genre }.toSet(),
-            ratingValue = seriesDAO.ratingValue,
-            ratingCount = seriesDAO.ratingCount,
-            posterURL = seriesDAO.posterURL,
-            numberSeasons = seriesDAO.numberSeasons,
-        )
-    }
-}
+    val seasons: List<Season>
+)
