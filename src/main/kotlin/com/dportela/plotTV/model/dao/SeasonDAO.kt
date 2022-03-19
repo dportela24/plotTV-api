@@ -16,20 +16,36 @@ data class SeasonDAO (
     @JoinColumn(name = "series_key", nullable = false)
     var series: SeriesDAO? = null,
 
+    @OneToMany(
+        mappedBy = "season",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true
+    )
+    val episodes: MutableList<EpisodeDAO> = mutableListOf(),
+
     val number: Int,
     val numberEpisodes: Int
-    //val episodes: Set<Episode>
 ) {
+    fun addEpisode(episodeDAO: EpisodeDAO) {
+        episodes.add(episodeDAO)
+        episodeDAO.season = this
+    }
+
     fun toApplicationModel() = Season(
         number = number,
         numberEpisodes = numberEpisodes,
-        //episodes = emptySet()
+        episodes = episodes.map { it.toApplicationModel() }
     )
 
     companion object{
         fun fromApplicationModel(season: Season) = SeasonDAO(
             number = season.number,
             numberEpisodes = season.numberEpisodes
-        )
+        ).apply {
+            season.episodes.forEach{ episode ->
+                val episodeDAO = EpisodeDAO.fromApplicationModel(episode)
+                this.addEpisode(episodeDAO)
+            }
+        }
     }
 }

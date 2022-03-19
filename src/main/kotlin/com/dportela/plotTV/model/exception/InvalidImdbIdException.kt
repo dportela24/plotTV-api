@@ -1,5 +1,5 @@
 package com.dportela.plotTV.model.exception
 
 class InvalidImdbIdException(
-    override val message: String
-) : RuntimeException(message)
+    val imdbId: String
+) : RuntimeException("Requested $imdbId is not a valid IMDb id")

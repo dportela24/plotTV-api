@@ -2,6 +2,7 @@ package com.dportela.plotTV.advice
 
 import com.dportela.plotTV.model.ErrorDetails
 import com.dportela.plotTV.model.exception.*
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -10,11 +11,14 @@ import javax.servlet.http.HttpServletRequest
 
 @ControllerAdvice
 class GlobalExceptionHandler {
+    val logger = LoggerFactory.getLogger(this::class.java)
+
     @ExceptionHandler(value = [ConnectionErrorException::class,
         ScrappingUnavailableException::class,
         ParsingErrorException::class
     ])
     fun handleConnectionError(req: HttpServletRequest, ex: RuntimeException) : ResponseEntity<ErrorDetails> {
+        logger.error("Scrapping error. ${ex.message}")
         val errorDetails = ErrorDetails(
             ErrorDetails.ErrorCode.SCRAPPER_ERROR,
             "Scrapping error",
@@ -40,15 +44,16 @@ class GlobalExceptionHandler {
         val errorDetails = ErrorDetails(
             ErrorDetails.ErrorCode.INVALID_IMDB_ID,
             "Invalid IMDb Id",
-            ex.message
+            ex.message!!
         )
 
         return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
     }
 
-    @ExceptionHandler(value = [RuntimeException::class])
+    //@ExceptionHandler(value = [RuntimeException::class])
     fun handleUnknownError(req: HttpServletRequest,
                            ex: RuntimeException) : ResponseEntity<ErrorDetails> {
+        logger.error("Unexpected error. Message: ${ex.message}")
         val errorDetails = ErrorDetails(
             ErrorDetails.ErrorCode.UNEXPECTED_ERROR,
             "Unexpected Error",
@@ -56,5 +61,17 @@ class GlobalExceptionHandler {
         )
 
         return ResponseEntity(errorDetails, HttpStatus.SERVICE_UNAVAILABLE)
+    }
+
+    @ExceptionHandler(value = [TVSeriesNotFoundException::class])
+    fun handleTVSeriesNotFound(req: HttpServletRequest,
+                               ex: TVSeriesNotFoundException) : ResponseEntity<ErrorDetails> {
+        val errorDetails = ErrorDetails(
+            ErrorDetails.ErrorCode.TV_SERIES_NOT_FOUND,
+            "TV Series not found",
+            ex.message
+        )
+
+        return ResponseEntity(errorDetails, HttpStatus.NOT_FOUND)
     }
 }

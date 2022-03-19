@@ -31,9 +31,12 @@ data class SeriesDAO (
     )
     val seasons: MutableList<SeasonDAO> = mutableListOf(),
 
+    @Column(length = 5000)
+    val summary: String?,
+
+
     val name: String,
     val originalName: String?,
-    val summary: String?,
     val episodeDuration: Duration?,
     val startYear: Int,
     val endYear: Int?,

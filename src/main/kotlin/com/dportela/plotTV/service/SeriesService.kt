@@ -12,10 +12,12 @@ class SeriesService(
     val logger = LoggerFactory.getLogger(this::class.java)
 
     fun createSeries(imdbId: String): Series? {
+        logger.info("Series $imdbId does not exist. Going to fetch it.")
         return scrapperService.fetchSeries(imdbId)?.also { repositoryService.saveSeries(it) }
     }
 
     fun getSeries(imdbId: String): Series? {
+        logger.info("Getting series $imdbId")
         val seriesDAO = repositoryService.findSeriesByImdbId(imdbId)
 
         return seriesDAO ?: createSeries(imdbId)
