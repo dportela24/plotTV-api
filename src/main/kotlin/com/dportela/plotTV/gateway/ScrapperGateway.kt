@@ -1,4 +1,4 @@
-package com.dportela.plotTV.service
+package com.dportela.plotTV.gateway
 
 import com.dportela.plotTV.model.Series
 import com.dportela.plotTV.model.exception.ConnectionErrorException
@@ -6,10 +6,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestTemplate
-import kotlin.math.log
 
 @Service
-class ScrapperService(
+class ScrapperGateway(
     val scrapperRestTemplate: RestTemplate
 ) {
     val logger = LoggerFactory.getLogger(this::class.java)

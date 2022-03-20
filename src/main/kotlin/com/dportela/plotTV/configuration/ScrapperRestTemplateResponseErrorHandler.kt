@@ -29,7 +29,9 @@ class ScrapperRestTemplateResponseErrorHandler : DefaultResponseErrorHandler() {
             ScrapperErrorCodes.TV_SERIES_NOT_FOUND -> throw TVSeriesNotFoundException(errorDetails.errorMessage)
             ScrapperErrorCodes.NOT_A_TV_SERIES_ERROR -> throw NotATvSeriesException(errorDetails.errorMessage)
             ScrapperErrorCodes.INVALID_IMDB_ID -> throw InvalidImdbIdException(errorDetails.errorMessage)
-            ScrapperErrorCodes.CONNECTION_ERROR, ScrapperErrorCodes.SCRAPPING_ERROR, ScrapperErrorCodes.UNEXPECTED_ERROR -> {
+            ScrapperErrorCodes.CONNECTION_ERROR,
+            ScrapperErrorCodes.SCRAPPING_ERROR,
+            ScrapperErrorCodes.UNEXPECTED_ERROR -> {
                 logger.error("Scrapping is not available. ${errorDetails.errorMessage}")
                 throw ScrappingUnavailableException("Could not retrieve series due to scrapper being down...")
             }
@@ -42,16 +44,13 @@ class ScrapperRestTemplateResponseErrorHandler : DefaultResponseErrorHandler() {
 
     class ScrapperErrorCodes {
         companion object {
-            val NO_ENDPOINT_HANDLER   = "000001"
-            val NO_HTTP_METHOD        = "000002"
-            val NOT_A_TV_SERIES_ERROR = "000003"
-            val CONNECTION_ERROR      = "000004"
-            val SCRAPPING_ERROR       = "000005"
-            val INVALID_IMDB_ID       = "000006"
-            val TV_SERIES_NOT_FOUND   = "000007"
-            val MISSING_PARAMETERS    = "000008"
-            val NO_SEARCH_RESULTS     = "000009"
-            val UNEXPECTED_ERROR      = "111111"
+            const val NOT_A_TV_SERIES_ERROR = "000003"
+            const val CONNECTION_ERROR      = "000004"
+            const val SCRAPPING_ERROR       = "000005"
+            const val INVALID_IMDB_ID       = "000006"
+            const val TV_SERIES_NOT_FOUND   = "000007"
+            const val NO_SEARCH_RESULTS     = "000009"
+            const val UNEXPECTED_ERROR      = "111111"
         }
     }
 }

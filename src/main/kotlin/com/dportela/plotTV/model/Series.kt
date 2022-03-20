@@ -13,7 +13,7 @@ data class Series (
     val episodeDuration: Duration?,
     val startYear: Int,
     val endYear: Int?,
-    val genres: Set<String>,
+    val genres: List<String>,
     val ratingValue: Float?,
     val ratingCount: Int?,
     val posterURL: String?,

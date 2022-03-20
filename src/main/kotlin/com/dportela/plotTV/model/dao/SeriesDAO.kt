@@ -64,13 +64,56 @@ data class SeriesDAO (
         episodeDuration = episodeDuration,
         startYear = startYear,
         endYear = endYear,
-        genres = genres.map { it.genre }.toSet(),
+        genres = genres.map { it.genre },
         ratingValue = ratingValue,
         ratingCount = ratingCount,
         posterURL = posterURL,
         numberSeasons = numberSeasons,
         seasons = seasons.map { it.toApplicationModel() },
     )
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SeriesDAO
+
+        if (id != other.id) return false
+        if (imdbId != other.imdbId) return false
+        if (genres != other.genres) return false
+        if (seasons != other.seasons) return false
+        if (summary != other.summary) return false
+        if (name != other.name) return false
+        if (originalName != other.originalName) return false
+        if (episodeDuration != other.episodeDuration) return false
+        if (startYear != other.startYear) return false
+        if (endYear != other.endYear) return false
+        if (ratingValue != other.ratingValue) return false
+        if (ratingCount != other.ratingCount) return false
+        if (posterURL != other.posterURL) return false
+        if (numberSeasons != other.numberSeasons) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + imdbId.hashCode()
+        result = 31 * result + genres.hashCode()
+        result = 31 * result + seasons.hashCode()
+        result = 31 * result + (summary?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        result = 31 * result + (originalName?.hashCode() ?: 0)
+        result = 31 * result + (episodeDuration?.hashCode() ?: 0)
+        result = 31 * result + startYear
+        result = 31 * result + (endYear ?: 0)
+        result = 31 * result + (ratingValue?.hashCode() ?: 0)
+        result = 31 * result + (ratingCount ?: 0)
+        result = 31 * result + (posterURL?.hashCode() ?: 0)
+        result = 31 * result + numberSeasons
+        return result
+    }
+
 
     companion object {
         fun fromApplicationModel(series: Series) = SeriesDAO(

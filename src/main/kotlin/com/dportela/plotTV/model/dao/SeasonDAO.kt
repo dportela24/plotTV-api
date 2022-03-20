@@ -24,10 +24,11 @@ data class SeasonDAO (
     val episodes: MutableList<EpisodeDAO> = mutableListOf(),
 
     val number: Int,
-    val numberEpisodes: Int
+    var numberEpisodes: Int = 0
 ) {
     fun addEpisode(episodeDAO: EpisodeDAO) {
         episodes.add(episodeDAO)
+        numberEpisodes++
         episodeDAO.season = this
     }
 
@@ -36,6 +37,32 @@ data class SeasonDAO (
         numberEpisodes = numberEpisodes,
         episodes = episodes.map { it.toApplicationModel() }
     )
+
+    override fun toString(): String {
+        return "SeasonDAO(id=$id, episodes=$episodes, number=$number, numberEpisodes=$numberEpisodes)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SeasonDAO
+
+        if (id != other.id) return false
+        if (episodes != other.episodes) return false
+        if (number != other.number) return false
+        if (numberEpisodes != other.numberEpisodes) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + episodes.hashCode()
+        result = 31 * result + number
+        result = 31 * result + numberEpisodes
+        return result
+    }
 
     companion object{
         fun fromApplicationModel(season: Season) = SeasonDAO(

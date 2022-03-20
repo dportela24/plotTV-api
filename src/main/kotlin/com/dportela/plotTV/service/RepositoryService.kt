@@ -20,15 +20,16 @@ class RepositoryService(
 
     fun saveSeries(series: Series) {
         logger.info("Getting series DAO")
-        SeriesDAO.fromApplicationModel(series).also { seriesDAO ->
+        val seriesDAO = SeriesDAO.fromApplicationModel(series).also { seriesDAO ->
             series.genres.map { genre ->
                 val genreDAO = genreRepository.findByGenre(genre) ?: GenreDAO(genre = genre)
                 seriesDAO.addGenre(genreDAO)
             }
-            logger.info("Saving series")
-            seriesRepository.save(seriesDAO)
-            logger.info("Series saved")
         }
+
+        logger.info("Saving series")
+        seriesRepository.save(seriesDAO)
+        logger.info("Series saved")
     }
 
     fun findSeriesByImdbId(imdbId: String) = seriesRepository.findByImdbId(imdbId)?.toApplicationModel()
