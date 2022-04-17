@@ -33,4 +33,8 @@ class RepositoryService(
     }
 
     fun findSeriesByImdbId(imdbId: String) = seriesRepository.findByImdbId(imdbId)?.toApplicationModel()
+
+    fun existsByImdbId(imdbId: String) = seriesRepository.existsByImdbId(imdbId)
+
+    fun findSeriesByName(name: String) = seriesRepository.findByName(name)?.toApplicationModel()
 }

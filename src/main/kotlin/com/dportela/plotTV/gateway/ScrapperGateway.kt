@@ -13,7 +13,7 @@ class ScrapperGateway(
 ) {
     val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun fetchSeries(imdbId: String) : Series? {
+    fun fetchSeriesById(imdbId: String) : Series? {
         logger.info("Fetching series $imdbId")
         val response = try {
             scrapperRestTemplate
@@ -23,6 +23,19 @@ class ScrapperGateway(
             throw ConnectionErrorException("Could not connect to scrapper")
         }
         logger.info("Fetched series $imdbId")
+        return response.body
+    }
+
+    fun fetchSeriesByName(name: String) : Series? {
+        logger.info("Fetching series with query $name")
+        val response = try {
+            scrapperRestTemplate
+                .getForEntity("/scrap/name/$name", Series::class.java)
+        } catch (ex: ResourceAccessException) {
+            logger.error("Could not connect to scrapper. ${ex.message}")
+            throw ConnectionErrorException("Could not connect to scrapper")
+        }
+        logger.info("Fetched series with query $name")
         return response.body
     }
 }

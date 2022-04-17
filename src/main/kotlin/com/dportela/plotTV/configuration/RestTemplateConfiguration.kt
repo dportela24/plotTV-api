@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class RestTemplateConfiguration(
-    @Value("http://localhost:8000") val scrapperURL: String
+    @Value("http://localhost:5000") val scrapperURL: String
 ) {
     @Bean
     fun restTemplate() = RestTemplateBuilder()

@@ -26,9 +26,10 @@ class ScrapperRestTemplateResponseErrorHandler : DefaultResponseErrorHandler() {
         }
 
         when (errorDetails.errorCode) {
-            ScrapperErrorCodes.TV_SERIES_NOT_FOUND -> throw TVSeriesNotFoundException(errorDetails.errorMessage)
             ScrapperErrorCodes.NOT_A_TV_SERIES_ERROR -> throw NotATvSeriesException(errorDetails.errorMessage)
             ScrapperErrorCodes.INVALID_IMDB_ID -> throw InvalidImdbIdException(errorDetails.errorMessage)
+            ScrapperErrorCodes.NO_SEARCH_RESULTS,
+            ScrapperErrorCodes.TV_SERIES_NOT_FOUND -> throw TVSeriesNotFoundException(errorDetails.errorMessage)
             ScrapperErrorCodes.CONNECTION_ERROR,
             ScrapperErrorCodes.SCRAPPING_ERROR,
             ScrapperErrorCodes.UNEXPECTED_ERROR -> {

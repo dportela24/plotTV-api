@@ -66,7 +66,7 @@ class ScrapperGatewayTest {
 
         setupMockServer(imdbId, HttpStatus.OK, expectedSeries)
 
-        val actualSeries = subject.fetchSeries(imdbId)
+        val actualSeries = subject.fetchSeriesById(imdbId)
 
         assertEquals(expectedSeries, actualSeries)
     }
@@ -80,7 +80,7 @@ class ScrapperGatewayTest {
             .andExpect(method(HttpMethod.GET))
             .andRespond { _ -> throw ResourceAccessException("") }
 
-        val ex = assertThrows<ConnectionErrorException> { subject.fetchSeries(imdbId) }
+        val ex = assertThrows<ConnectionErrorException> { subject.fetchSeriesById(imdbId) }
 
         assertTrue(ex.message.contains(expectedErrorMessage))
     }
@@ -92,7 +92,7 @@ class ScrapperGatewayTest {
 
         setupMockServer(imdbId, HttpStatus.NOT_FOUND, scrapperErrorResponse)
 
-        val ex = assertThrows<TVSeriesNotFoundException> { subject.fetchSeries(imdbId) }
+        val ex = assertThrows<TVSeriesNotFoundException> { subject.fetchSeriesById(imdbId) }
 
         assertEquals(scrapperErrorResponse.errorMessage, ex.message)
     }
@@ -104,7 +104,7 @@ class ScrapperGatewayTest {
 
         setupMockServer(imdbId, HttpStatus.BAD_REQUEST, scrapperErrorResponse)
 
-        val ex = assertThrows<NotATvSeriesException> { subject.fetchSeries(imdbId) }
+        val ex = assertThrows<NotATvSeriesException> { subject.fetchSeriesById(imdbId) }
 
         assertEquals(scrapperErrorResponse.errorMessage, ex.message)
     }
@@ -116,7 +116,7 @@ class ScrapperGatewayTest {
 
         setupMockServer(imdbId, HttpStatus.BAD_REQUEST, scrapperErrorResponse)
 
-        val ex = assertThrows<InvalidImdbIdException> { subject.fetchSeries(imdbId) }
+        val ex = assertThrows<InvalidImdbIdException> { subject.fetchSeriesById(imdbId) }
 
         assertEquals(scrapperErrorResponse.errorMessage, ex.message)
     }
@@ -131,7 +131,7 @@ class ScrapperGatewayTest {
 
         setupMockServer(imdbId, HttpStatus.BAD_GATEWAY, scrapperErrorResponse)
 
-        val ex = assertThrows<ScrappingUnavailableException> { subject.fetchSeries(imdbId) }
+        val ex = assertThrows<ScrappingUnavailableException> { subject.fetchSeriesById(imdbId) }
 
         assertEquals(scrapperErrorResponse.errorMessage, ex.message)
     }
@@ -145,7 +145,7 @@ class ScrapperGatewayTest {
         )
         setupMockServer(imdbId, HttpStatus.SERVICE_UNAVAILABLE, scrapperErrorResponse)
 
-        val ex = assertThrows<ScrappingUnavailableException> { subject.fetchSeries(imdbId) }
+        val ex = assertThrows<ScrappingUnavailableException> { subject.fetchSeriesById(imdbId) }
 
         assertEquals(scrapperErrorResponse.errorMessage, ex.message)
     }
@@ -159,7 +159,7 @@ class ScrapperGatewayTest {
         )
         setupMockServer(imdbId, HttpStatus.SERVICE_UNAVAILABLE, scrapperErrorResponse)
 
-        val ex = assertThrows<ScrappingUnavailableException> { subject.fetchSeries(imdbId) }
+        val ex = assertThrows<ScrappingUnavailableException> { subject.fetchSeriesById(imdbId) }
 
         assertEquals(scrapperErrorResponse.errorMessage, ex.message)
     }

@@ -50,7 +50,7 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
     }
 
-    //@ExceptionHandler(value = [RuntimeException::class])
+    @ExceptionHandler(value = [RuntimeException::class])
     fun handleUnknownError(req: HttpServletRequest,
                            ex: RuntimeException) : ResponseEntity<ErrorDetails> {
         logger.error("Unexpected error. Message: ${ex.message}")

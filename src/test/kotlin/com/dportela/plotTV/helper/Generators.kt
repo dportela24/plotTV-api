@@ -13,6 +13,8 @@ import kotlin.random.Random
 
 fun generateImdbId() = "tt" + Random.nextInt(10000000, 99999999)
 
+fun generateName() = "My series ${Random.nextInt(1, 101)}"
+
 fun generateSeries(
     imdbId: String = generateImdbId(),
     name: String = "My series ${Random.nextInt(1, 101)}",
