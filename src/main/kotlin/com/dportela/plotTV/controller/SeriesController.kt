@@ -6,10 +6,7 @@ import com.dportela.plotTV.model.exception.InvalidImdbIdException
 import com.dportela.plotTV.service.SeriesService
 import org.slf4j.MDC
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
@@ -37,5 +34,10 @@ class SeriesController(
         val series = seriesService.getSeriesByName(name)
 
         return series?.let{ ResponseEntity.ok(it) }
+    }
+
+    @GetMapping("/autocomplete")
+    fun getAutocomplete(@RequestParam(name = "q") searchInput: String) : ResponseEntity<List<String>> {
+        return ResponseEntity.ok(seriesService.autoComplete(searchInput))
     }
 }

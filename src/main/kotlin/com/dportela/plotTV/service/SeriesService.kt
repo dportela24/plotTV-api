@@ -1,7 +1,9 @@
 package com.dportela.plotTV.service
 
 import com.dportela.plotTV.gateway.ScrapperGateway
+import com.dportela.plotTV.model.SearchByNameCacheEntry
 import com.dportela.plotTV.model.Series
+import com.dportela.plotTV.repository.SearchByNameCache
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import org.slf4j.LoggerFactory
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service
 @Service
 class SeriesService(
     val repositoryService: RepositoryService,
+    val searchByNameCache: SearchByNameCache,
     val scrapperGateway: ScrapperGateway
 ) {
     val logger = LoggerFactory.getLogger(this::class.java)
@@ -26,9 +29,11 @@ class SeriesService(
 
     fun getSeriesByName(name: String): Series? {
         logger.info("Getting series $name")
-        val seriesDAO = repositoryService.findSeriesByName(name)
 
-        return seriesDAO ?: let {
+        return repositoryService.findSeriesByName(name) ?: let {
+            val cacheEntry = searchByNameCache.get(name)
+            cacheEntry?.run { repositoryService.findSeriesByImdbId(this.imdbId) }
+        } ?: let {
             logger.info("Could not find series with requested name $name. Going to fetch it.")
             scrapperGateway.fetchSeriesByName(name)?.also {
                 runBlocking(MDCContext()) {
@@ -36,8 +41,12 @@ class SeriesService(
                         logger.info("Series does not exist on database. Going to save it.")
                         repositoryService.saveSeries(it)
                     }
+
+                    searchByNameCache.save(name, SearchByNameCacheEntry(imdbId = it.imdbId, title = it.name))
                 }
             }
         }
     }
+
+    fun autoComplete(searchInput: String) : List<String> = searchByNameCache.getTitlesByPatter(searchInput) ?: emptyList()
 }
