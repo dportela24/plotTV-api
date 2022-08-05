@@ -22,7 +22,7 @@ class GlobalExceptionHandler {
         val errorDetails = ErrorDetails(
             ErrorDetails.ErrorCode.SCRAPPER_ERROR,
             "Scrapping error",
-            "Could not connect to scrapper"
+            ex.message ?: "Could not connect to scrapper"
         )
 
         return ResponseEntity(errorDetails, HttpStatus.BAD_GATEWAY)

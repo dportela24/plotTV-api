@@ -35,13 +35,13 @@ class SeriesServiceTest {
         val expectedSeries = generateSeries(imdbId)
 
         every { repositoryService.findSeriesByImdbId(imdbId) } returns null
-        every { scrapperGateway.fetchSeriesById(imdbId) } returns expectedSeries
+        every { scrapperGateway.scrapSeriesById(imdbId) } returns expectedSeries
         every { repositoryService.saveSeries(expectedSeries) } returns Unit
 
         val actualSeries = subject.getSeriesById(imdbId)
 
         verify(exactly = 1) { repositoryService.findSeriesByImdbId(imdbId) }
-        verify(exactly = 1) { scrapperGateway.fetchSeriesById(imdbId) }
+        verify(exactly = 1) { scrapperGateway.scrapSeriesById(imdbId) }
         verify(exactly = 1) { repositoryService.saveSeries(expectedSeries) }
         assertEquals(expectedSeries, actualSeries)
     }
@@ -53,14 +53,14 @@ class SeriesServiceTest {
         val expectedSeries = generateSeries(imdbId = imdbId, name = name)
 
         every { repositoryService.findSeriesByName(name) } returns null
-        every { scrapperGateway.fetchSeriesByName(name) } returns expectedSeries
+        every { scrapperGateway.scrapSeriesByName(name) } returns expectedSeries
         every { repositoryService.existsByImdbId(imdbId) } returns false
         every { repositoryService.saveSeries(expectedSeries) } returns Unit
 
         val actualSeries = subject.getSeriesByName(name)
 
         verify(exactly = 1) { repositoryService.findSeriesByName(name) }
-        verify(exactly = 1) { scrapperGateway.fetchSeriesByName(name) }
+        verify(exactly = 1) { scrapperGateway.scrapSeriesByName(name) }
         verify(exactly = 1) { repositoryService.existsByImdbId(imdbId) }
         verify(exactly = 1) { repositoryService.saveSeries(expectedSeries) }
         assertEquals(expectedSeries, actualSeries)
@@ -74,14 +74,14 @@ class SeriesServiceTest {
         val expectedSeries = generateSeries(imdbId = imdbId, name = name)
 
         every { repositoryService.findSeriesByName(name) } returns null
-        every { scrapperGateway.fetchSeriesByName(name) } returns expectedSeries
+        every { scrapperGateway.scrapSeriesByName(name) } returns expectedSeries
         every { repositoryService.existsByImdbId(imdbId) } returns true
         every { repositoryService.saveSeries(expectedSeries) } returns Unit
 
         val actualSeries = subject.getSeriesByName(name)
 
         verify(exactly = 1) { repositoryService.findSeriesByName(name) }
-        verify(exactly = 1) { scrapperGateway.fetchSeriesByName(name) }
+        verify(exactly = 1) { scrapperGateway.scrapSeriesByName(name) }
         verify(exactly = 1) { repositoryService.existsByImdbId(imdbId) }
         assertEquals(expectedSeries, actualSeries)
         confirmVerified(repositoryService, scrapperGateway)

@@ -1,7 +1,6 @@
 package com.dportela.plotTV.model.dao
 
-import com.dportela.plotTV.model.Season
-import com.dportela.plotTV.model.Series
+import com.dportela.plotTV.model.applicational.Series
 import java.time.Duration
 import java.time.Instant
 import javax.persistence.*

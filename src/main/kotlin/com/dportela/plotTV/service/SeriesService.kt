@@ -1,9 +1,10 @@
 package com.dportela.plotTV.service
 
 import com.dportela.plotTV.gateway.ScrapperGateway
-import com.dportela.plotTV.model.SearchByNameCacheEntry
-import com.dportela.plotTV.model.Series
-import com.dportela.plotTV.repository.SearchByNameCache
+import com.dportela.plotTV.helper.validateImdbId
+import com.dportela.plotTV.model.dao.TitleMatchingCacheDAO
+import com.dportela.plotTV.model.applicational.Series
+import com.dportela.plotTV.repository.QueryCache
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import org.slf4j.LoggerFactory
@@ -12,41 +13,61 @@ import org.springframework.stereotype.Service
 @Service
 class SeriesService(
     val repositoryService: RepositoryService,
-    val searchByNameCache: SearchByNameCache,
+    val queryCache: QueryCache,
     val scrapperGateway: ScrapperGateway
 ) {
     val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun getSeriesById(imdbId: String): Series? {
-        logger.info("Getting series $imdbId")
-        val seriesDAO = repositoryService.findSeriesByImdbId(imdbId)
+    fun getSeries(query: String): Series {
+        logger.info("Getting series with query $query")
 
-        return seriesDAO ?: let{
-            logger.info("Series $imdbId does not exist. Going to fetch it.")
-            scrapperGateway.fetchSeriesById(imdbId)?.also { repositoryService.saveSeries(it) }
+        return queryCache.get(query)?.let { cachedImdbId ->
+            repositoryService.findSeriesByImdbId(cachedImdbId)
+        } ?: let {
+            logger.info("Could not find series with requested name $query. Going to fetch it.")
+            scrapSeries(query)
         }
     }
 
-    fun getSeriesByName(name: String): Series? {
-        logger.info("Getting series $name")
+    fun scrapSeries(query: String) : Series {
+        val series =
+            if (validateImdbId(query))
+                scrapSeriesById(query)
+            else
+                scrapSeriesByName(query)
 
-        return repositoryService.findSeriesByName(name) ?: let {
-            val cacheEntry = searchByNameCache.get(name)
-            cacheEntry?.run { repositoryService.findSeriesByImdbId(this.imdbId) }
-        } ?: let {
-            logger.info("Could not find series with requested name $name. Going to fetch it.")
-            scrapperGateway.fetchSeriesByName(name)?.also {
-                runBlocking(MDCContext()) {
-                    if (!repositoryService.existsByImdbId(it.imdbId)) {
-                        logger.info("Series does not exist on database. Going to save it.")
-                        repositoryService.saveSeries(it)
-                    }
+        runBlocking {
+            saveSeriesData(query, series)
+        }
 
-                    searchByNameCache.save(name, SearchByNameCacheEntry(imdbId = it.imdbId, title = it.name))
-                }
+        return series
+    }
+
+    fun scrapSeriesByName(name: String) : Series {
+        return scrapperGateway.scrapSeriesByName(name).also { scrappedSeries ->
+            runBlocking(MDCContext()) {
+               saveSeriesData(name, scrappedSeries)
             }
         }
     }
 
-    fun autoComplete(searchInput: String) : List<String> = searchByNameCache.getTitlesByPatter(searchInput) ?: emptyList()
+    fun scrapSeriesById(id: String) : Series {
+        return scrapperGateway.scrapSeriesById(id).also { scrappedSeries ->
+            runBlocking(MDCContext()) {
+                saveSeriesData(id, scrappedSeries)
+            }
+        }
+    }
+
+    private fun saveSeriesData(inputQuery: String, seriesToSave: Series) {
+        if (!repositoryService.existsByImdbId(seriesToSave.imdbId)) {
+            logger.info("Series does not exist on database. Going to save it.")
+            repositoryService.saveSeries(seriesToSave)
+        }
+
+        queryCache.save(
+            inputQuery,
+            seriesToSave.imdbId
+        )
+    }
 }

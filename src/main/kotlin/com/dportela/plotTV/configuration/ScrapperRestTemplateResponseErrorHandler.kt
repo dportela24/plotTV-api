@@ -30,10 +30,13 @@ class ScrapperRestTemplateResponseErrorHandler : DefaultResponseErrorHandler() {
             ScrapperErrorCodes.INVALID_IMDB_ID -> throw InvalidImdbIdException(errorDetails.errorMessage)
             ScrapperErrorCodes.NO_SEARCH_RESULTS,
             ScrapperErrorCodes.TV_SERIES_NOT_FOUND -> throw TVSeriesNotFoundException(errorDetails.errorMessage)
-            ScrapperErrorCodes.CONNECTION_ERROR,
             ScrapperErrorCodes.SCRAPPING_ERROR,
             ScrapperErrorCodes.UNEXPECTED_ERROR -> {
-                logger.error("Scrapping is not available. ${errorDetails.errorMessage}")
+                logger.error("An error occurred while scrapping title. ${errorDetails.errorMessage}")
+                throw ScrappingUnavailableException("Could not scrap data... You sure title is a tv series?")
+            }
+            ScrapperErrorCodes.CONNECTION_ERROR -> {
+                logger.error("Could not connect to scrapper. ${errorDetails.errorMessage}")
                 throw ScrappingUnavailableException("Could not retrieve series due to scrapper being down...")
             }
             else -> {

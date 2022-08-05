@@ -1,9 +1,6 @@
-package com.dportela.plotTV.model
+package com.dportela.plotTV.model.applicational
 
-import com.dportela.plotTV.model.dao.GenreDAO
-import com.dportela.plotTV.model.dao.SeriesDAO
 import java.time.Duration
-import java.time.Instant
 
 data class Series (
     val imdbId: String,

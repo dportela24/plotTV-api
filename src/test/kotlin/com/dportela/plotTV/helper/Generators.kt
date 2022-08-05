@@ -1,11 +1,9 @@
 package com.dportela.plotTV.helper
 
-import com.dportela.plotTV.model.Episode
+import com.dportela.plotTV.model.applicational.Episode
 import com.dportela.plotTV.model.ErrorDetails
-import com.dportela.plotTV.model.Season
-import com.dportela.plotTV.model.Series
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import com.dportela.plotTV.model.applicational.Season
+import com.dportela.plotTV.model.applicational.Series
 import java.time.Duration
 import java.time.LocalDate
 import java.time.temporal.TemporalAccessor

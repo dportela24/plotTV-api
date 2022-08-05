@@ -1,4 +1,4 @@
-package com.dportela.plotTV.model
+package com.dportela.plotTV.model.applicational
 
 import com.dportela.plotTV.configuration.TemporalAccessorDeserializer
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize

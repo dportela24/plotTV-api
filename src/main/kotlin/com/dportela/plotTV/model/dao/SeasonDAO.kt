@@ -1,8 +1,6 @@
 package com.dportela.plotTV.model.dao
 
-import com.dportela.plotTV.model.Episode
-import com.dportela.plotTV.model.Season
-import com.dportela.plotTV.model.Series
+import com.dportela.plotTV.model.applicational.Season
 import javax.persistence.*
 
 @Entity

@@ -1,19 +1,16 @@
 package com.dportela.plotTV.service
 
-import com.dportela.plotTV.model.Series
+import com.dportela.plotTV.model.applicational.Series
 import com.dportela.plotTV.model.dao.GenreDAO
 import com.dportela.plotTV.model.dao.SeriesDAO
 import com.dportela.plotTV.repository.GenreRepository
-import com.dportela.plotTV.repository.SeasonRepository
 import com.dportela.plotTV.repository.SeriesRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import kotlin.math.log
 
 @Service
 class RepositoryService(
     val seriesRepository: SeriesRepository,
-    val seasonRepository: SeasonRepository,
     val genreRepository: GenreRepository
 ) {
     val logger = LoggerFactory.getLogger(this::class.java)

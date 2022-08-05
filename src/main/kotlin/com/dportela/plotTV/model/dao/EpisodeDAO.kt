@@ -1,8 +1,7 @@
 package com.dportela.plotTV.model.dao
 
 import com.dportela.plotTV.configuration.TemporalAccessorConverter
-import com.dportela.plotTV.model.Episode
-import com.dportela.plotTV.model.Season
+import com.dportela.plotTV.model.applicational.Episode
 import java.time.temporal.TemporalAccessor
 import javax.persistence.*
 
